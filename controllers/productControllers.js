@@ -236,7 +236,6 @@ module.exports = {
                 dataProduct: updateProduct
             })
         } catch (error) {
-            console.log("🚀 ~ file: productControllers.js ~ line 234 ~ removeProductById: ~ error", error)
             return res.status(500).json({
                 status: "failed",
                 message: "Internal Server Error",
@@ -255,12 +254,12 @@ module.exports = {
                 expiredAt: Joi.date().format('YYYY-MM-DD'),
             })
 
-            const check = Joi.validate({
+            const check = schema.validate({
                 name: body.name,
                 qty: body.qty,
                 picture: req.file ? req.file.path : 'picture',
                 expiredAt: body.expiredAt,
-            });
+            }, {abortEarly: false});
 
             if (check.error) {
                 return res.status(400).json({
@@ -272,13 +271,47 @@ module.exports = {
                 });
             };
 
-            const updateProduct = await products.update({
+            const findProduct = await products.findOne({
+                where: {
+                    id: req.params.id
+                }
+            });
+
+            if (!findProduct || findProduct.dataValues.isActive == false) {
+                return res.status(400).json({
+                    status: 'failed',
+                    message: 'product has been removed'
+                })
+            }
+
+            await products.update({
                 name: body.name,
                 qty: body.qty,
                 [req.file ? 'picture' : null]: req.file ? req.file.path : null,
                 expiredAt: body.expiredAt,
+            },
+            {
+                where: {
+                    id: req.params.id
+                }
+            })
+
+            const findAfterUpdate = await products.findOne({
+                where: {
+                    id: req.params.id
+                },
+                attributes: {
+                    exclude: ['createdAt', 'updatedAt']
+                },
+            })
+
+            return res.status(200).json({
+                status: 'success',
+                message: 'successfully update product',
+                dataProduct: findAfterUpdate,
             })
         } catch (error) {
+            console.log("🚀 ~ file: productControllers.js ~ line 309 ~ updateProductById: ~ error", error)
             return res.status(500).json({
                 status: "failed",
                 message: "Internal Server Error",

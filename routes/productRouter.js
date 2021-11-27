@@ -7,6 +7,6 @@ router.post('/', upload('picture'), products.createProduct);
 router.get('/',  products.getAllProduct);
 router.get('/:id',  products.getProductById);
 router.delete('/:id', products.removeProductById);
-router.put('/:id', products.updateProductById);
+router.put('/:id', upload('picture'), products.updateProductById);
 
 module.exports = router;
