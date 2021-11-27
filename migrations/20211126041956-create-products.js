@@ -15,7 +15,8 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       picture: {
-        type: Sequelize.TEXT
+        type: Sequelize.TEXT,
+        defaultValue: 'https://res.cloudinary.com/dejongos/image/upload/v1637437182/cover/cat6_prod3-500x500_yp2mg3.jpg',
       },
       expiredAt: {
         type: Sequelize.DATEONLY
