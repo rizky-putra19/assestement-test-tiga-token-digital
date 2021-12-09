@@ -1,4 +1,4 @@
-# assestement-test-tiga-token-digital
+# Product CRUD for E-Commerce
 
 This API for CRUD product that common use in E-Commerce website or E-commerce application.
 
